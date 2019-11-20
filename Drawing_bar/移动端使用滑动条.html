@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>移动端使用滑动条.html</title>
+	<style>
+		.progress {
+			position: relative;
+			width: 300px;
+			margin: 100px auto;
+		}
+
+		.progress_bg {
+			height: 10px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			overflow: hidden;
+			background-color: #f2f2f2;
+		}
+
+		.progress_bar {
+			background: #5FB878;
+			width: 0;
+			height: 10px;
+			border-radius: 5px;
+		}
+
+		.progress_btn {
+			width: 20px;
+			height: 20px;
+			border-radius: 5px;
+			position: absolute;
+			background: #fff;
+			left: 0px;
+			margin-left: -10px;
+			top: -5px;
+			cursor: pointer;
+			border: 1px #ddd solid;
+			box-sizing: border-box;
+		}
+
+		.progress_btn:hover {
+			border-color: #F7B824;
+		}
+	</style>
+	<script type="text/javascript" src="jquery.min.js"></script>
+
+</head>
+
+<body>
+	<!-- 滑动条 -->
+	<div id="hua" style="display: none;position: absolute;z-index: 1;width: 100%;height: 40%;background: white">
+
+		<div style="height: 55%;margin-top:50px">
+			<div>
+				<span style="float: left;margin-left: 30px;">一系统</span>
+				<span style="float: right;margin-right: 30px;">二系统</span>
+			</div>
+			　 <div class="progress">
+				<div class="progress_bg">
+					<div class="progress_bar"></div>
+				</div>
+				<div class="progress_btn"></div>
+				<div>
+					<div class="text" style="width: 50px; float: left;">
+						0%
+					</div>
+					<div class="text2" style="width: 50px; float: right;">
+						0%
+					</div>
+				</div>
+				<div id="add">
+					+
+				</div>
+				<div id="sub">
+					-
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+
+		var tag = false,
+			ox = 0,
+			left = 0,
+			bgleft = 0;
+		$('.progress_btn').on('touchstart', function (e) {
+			ox = e.pageX - left;
+			tag = true;
+		});
+		$(document).on('touchend', function (e) {
+			tag = false;
+		});
+		$('.progress_bg').click(function (e) {//鼠标点击
+			if (!tag) {
+				bgleft = $('.progress_bg').offset().left;
+				left = e.pageX - bgleft;
+				if (left <= 0) {
+					left = 0;
+				} else if (left > 300) {
+					left = 300;
+				}
+				$('.progress_btn').css('left', left);
+				$('.progress_bar').animate({
+					width: left
+				}, 300);
+				$('.text').html(parseInt((left / 300) * 100) + '%');
+				var text = parseInt((left / 300) * 100);
+				$('.text2').html((100 - text) + '%');
+			}
+		});
+
+		$("#add").click(function (e) {
+			var wid = $('.progress_bar').width();
+			var lefts = wid + 3;
+			if (lefts <= 0) {
+				lefts = 0;
+			} else if (lefts > 300) {
+				lefts = 300;
+			}
+			$('.progress_btn').css('left', lefts);
+			$('.progress_bar').animate({
+				width: wid + 3
+			}, 200);
+			$('.text').html(parseInt((lefts / 300) * 100) + '%');
+			var text = parseInt((lefts / 300) * 100);
+			$('.text2').html((100 - text) + '%');
+		});
+		$("#sub").click(function (e) {
+			var wid = $('.progress_bar').width();
+			var lefts = wid - 3;
+			if (lefts <= 0) {
+				lefts = 0;
+			} else if (lefts > 300) {
+				lefts = 300;
+			}
+			$('.progress_btn').css('left', lefts);
+			$('.progress_bar').animate({
+				width: wid - 3
+			}, 200);
+			$('.text').html(parseInt((lefts / 300) * 100) + '%');
+			var text = parseInt((lefts / 300) * 100);
+			$('.text2').html((100 - text) + '%');
+		});
+	</script>
+
+</body>
+
+</html>
