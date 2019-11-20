@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>原生js实现可拖拽进度条效果</title>
+<style>
+ul.lanren{width:270px;margin:100px auto;}
+.scale_panel{color:#999;width:200px;position:absolute;line-height:18px;left:60px;top:-0px;}
+.scale_panel .r{float:right;}
+.scale span{background:url(images/scroll.gif) no-repeat;width:8px;height:16px;position:absolute;left:-2px;top:-5px;cursor:pointer;}
+.scale{ background-repeat: repeat-x; background-position: 0 100%; background-color: #E4E4E4; border-left: 1px #83BBD9 solid;  width: 200px; height: 5px; position: relative; font-size: 0px; border-radius: 3px; }
+.scale div{ background-repeat: repeat-x; background-color: #3BE3FF; width: 0px; position: absolute; height: 5px; width: 0; left: 0; bottom: 0; }
+.lanren li{font-size:12px;line-height:50px;position:relative;height:50px;list-style:none;}
+</style>
+</head>
+<body>
+
+<!-- 代码部分begin -->
+<div>
+<ul class="lanren">
+	<li><span id="title">0</span>
+		<div class="scale_panel" style="left: 33px;">
+			<span class="r">二系统</span>一系统
+			<div class="scale" id="bar">
+				<div></div>
+				<span id="btn"></span>
+			</div>
+			<div id="add" style="float:left ;margin-top: 5px;">
+				<img src="..\jia.jpg" width="15px" height="15px"></img>
+			</div>
+			<div id="sub" style="float: right;margin-top: 5px;">
+				<img src="..\jia.jpg" width="15px" height="15px"></img>
+			</div>
+		</div>
+		<span id="titles" style="float:right">0</span>
+	</li>
+</ul>
+</div>
+<script>
+var scale = function (btn,bar,title,add,sub,titles){
+	this.btn=document.getElementById(btn);
+	this.bar=document.getElementById(bar);
+	this.title=document.getElementById(title);
+	this.add=document.getElementById(add);
+	this.sub=document.getElementById(sub);
+	this.titles=document.getElementById(titles);
+	this.step=this.bar.getElementsByTagName("div")[0];
+	this.init();
+};
+scale.prototype={
+	init:function (){
+		var f=this,g=document,b=window,m=Math;
+		f.btn.onmousedown=function (e){
+			var x=(e||b.event).clientX;
+			var l=this.offsetLeft;
+			var max=f.bar.offsetWidth-this.offsetWidth;
+			g.onmousemove=function (e){
+				var thisX=(e||b.event).clientX;
+				var to=m.min(max,m.max(-2,l+(thisX-x)));
+				f.btn.style.left=to+'px';
+				f.ondrag(m.round(m.max(0,to/max)*100),to);
+				b.getSelection ? b.getSelection().removeAllRanges() : g.selection.empty();
+			};
+			g.onmouseup=new Function('this.onmousemove=null');
+		};
+		f.sub.onclick=function (e){
+			let l = f.btn.offsetLeft;
+			var max=f.bar.offsetWidth-f.btn.offsetWidth;
+			var to = l - max/100;
+			f.btn.style.left=m.max(0,to)+'px';
+			f.ondrag(m.round(m.max(0,to/max)*100),to);
+			b.getSelection ? b.getSelection().removeAllRanges() : g.selection.empty();
+		};
+		f.add.onclick=function (e){
+			let l = f.btn.offsetLeft;
+			var max=f.bar.offsetWidth-f.btn.offsetWidth;
+			var to = m.min((l + max/100),max);
+			f.btn.style.left=m.min(max,to)+'px';
+			f.ondrag(m.round(m.max(0,to/max)*100),to);
+			b.getSelection ? b.getSelection().removeAllRanges() : g.selection.empty();
+		};
+	},
+	ondrag:function (pos,x){
+		this.step.style.width=Math.max(0,x)+'px';
+		this.title.innerHTML=pos+'%';
+		this.titles.innerHTML = (100-pos)+'%';
+	}
+}
+new scale('btn','bar','title','add','sub','titles');
+</script>
+<!-- 代码部分end -->
+
+</body>
+</html>
